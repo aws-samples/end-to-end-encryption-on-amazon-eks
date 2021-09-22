@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: example-deploy
+  labels:
+    app: example-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: example-app
+  template:
+    metadata:
+      labels:
+        app: example-app
+    spec:
+      containers:
+        - name: example-app
+          image: nginx
+          ports:
+            - containerPort: 443
+          volumeMounts:
+            - name: tls-files
+              mountPath: /etc/nginx/ssl
+              readOnly: true
+            - name: config-volume
+              mountPath: /etc/nginx/conf.d
+      volumes:
+        - name: tls-files
+          secret:
+            secretName: example-app-tls
+        - name: config-volume
+          configMap:
+            name: secure-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: example-service
+  labels:
+    app: example-app
+spec:
+  ports:
+    - port: 443
+      targetPort: 443
+      protocol: TCP
+      name: https
+  selector:
+    app: example-app
+  type: NodePort
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: secure-config
+data:
+  app.conf: |-
+    server {
+      listen 443 ssl;
+      server_name <application dns name>;
+
+      ssl_certificate /etc/nginx/ssl/tls.crt;
+      ssl_certificate_key /etc/nginx/ssl/tls.key;
+
+      default_type text/plain;
+
+      location / {
+        return 200 "hello from pod $hostname\n";
+      }
+    }
