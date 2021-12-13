@@ -1,11 +1,8 @@
-## My Project
+**Set up end-to-end encryption for applications on Amazon EKS using cert-manager and Let's Encrypt**
 
-TODO: Fill this README out!
+    The repository is referenced in Amazon prescriptive-guidance link shared below where we walk through the architecture and deployment procedure. We urge viewers to go through the link.
 
-Be sure to:
-
-* Change the title in this README
-* Edit your repository description on GitHub
+<https://docs.aws.amazon.com/prescriptive-guidance/latest/patterns/set-up-end-to-end-encryption-for-applications-on-amazon-eks-using-cert-manager-and-let-s-encrypt.html>
 
 ## Security
 
